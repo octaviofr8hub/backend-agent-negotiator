@@ -22,7 +22,7 @@ logger = logging.getLogger("dispatch")
 class NegotiationDispatcher:
     """Handles LiveKit room creation and negotiator agent dispatch."""
 
-    AGENT_NAME = "negotiator-agent"
+    AGENT_NAME = "outbound-agent-negotiator"
 
     def __init__(self) -> None:
         self._lk = api.LiveKitAPI(
