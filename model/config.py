@@ -3,9 +3,11 @@ API Gateway configuration.
 Environment variables for LiveKit, CORS, and service settings.
 """
 import os
+from pydantic_core import MultiHostUrl
 from pydantic_settings import BaseSettings
 from typing import List, Literal, Union, Any
 from pydantic import AnyUrl, parse_obj_as, validator, Field
+from pydantic import PostgresDsn
 
 def parse_cors(value: Any) -> List[AnyUrl]:
     # print(f"Raw BACKEND_CORS_ORIGINS value: {value}")
@@ -42,6 +44,24 @@ class Settings(BaseSettings):
     # ── Environment ──
     ENVIRONMENT: Literal["local", "qa", "production"] = "local"
     DEBUG: bool = True
+
+    # Database
+    POSTGRESQL_USER: str
+    POSTGRESQL_PASSWORD: str
+    POSTGRESQL_SERVER: str
+    POSTGRESQL_PORT: int
+    POSTGRESQL_DB: str
+
+    @property
+    def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme="postgresql+psycopg2",
+            username=self.POSTGRESQL_USER,
+            password=self.POSTGRESQL_PASSWORD,
+            host=self.POSTGRESQL_SERVER,
+            port=self.POSTGRESQL_PORT,
+            path=self.POSTGRESQL_DB,
+        )
 
     class Config:
         env_file = os.path.join(

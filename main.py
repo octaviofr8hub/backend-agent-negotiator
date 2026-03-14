@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from model.config import settings
 from routes.negotiation import router as negotiation_router
+from routes.negotiations import router as negotiations_router
+from routes.transcript import router as transcript_router
 
 logging.basicConfig(level=logging.INFO)
 
@@ -31,6 +33,8 @@ app.add_middleware(
 )
 
 app.include_router(negotiation_router)
+app.include_router(negotiations_router)
+app.include_router(transcript_router)
 
 
 @app.get("/health", tags=["Health"])
